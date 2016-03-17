@@ -13,7 +13,7 @@ best <- function(state,outcome) {
       stop("invalid outcome", call. = TRUE)
     
     hosp_state <- subset(hospfile, State == state, select = c(2,col_index[[outcome]])) #columns selected based on outcome
-    hosp_order <-  hosp_state[order(hosp_state[,2],hosp_state[,1]),]  #sort columns by outcome values and by hospital name
+    hosp_order <-  hosp_state[order(hosp_state[,2],hosp_state[,1],na.last = NA),]  #sort columns by outcome values and by hospital name
     hosp_name <- hosp_order[,1][which.min(hosp_order[,2])] #select the hospital name by minimum value 
     hosp_name
   } 
