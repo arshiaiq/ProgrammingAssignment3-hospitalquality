@@ -15,8 +15,6 @@ best <- function(state,outcome) {
     hosp_order <-  hosp_state[order(hosp_state[,2],hosp_state[,1],na.last = NA),]  #sort columns by outcome values and by hospital name
     
     hosp_name <- hosp_order[,1][which.min(hosp_order[,2])] #select the hospital name by minimum value 
-    
-        if (length(hosp_name) > 1) {hosp_name <- hosp_order[,1][num]} #select hospital name in case of tie
          
     hosp_name
   } 
