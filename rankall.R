@@ -1,29 +1,30 @@
-rankall <- function(outcome,num = "best") {
+
+lrankall <- function(outcome,num = "best") {
   
   hospfile <- read.csv ("outcome-of-care-measures.csv",stringsAsFactors = FALSE, na.strings = "Not Available")
-  hstate <- sort(unique(hospfile$State))
-  houtcome <- c("heart attack","heart failure","pneumonia")
   col_index <- c("heart attack" = 11,"heart failure" = 17,"pneumonia" = 23) #column indexes as per master file
   hranking <- data.frame() #hospital dataframe with ranks for all hospitals by outcome
   
-  if (any(outcome==houtcome)==FALSE) #check for validity of outcome
-    stop("invalid outcome", call. = TRUE)
+      if ((outcome %in% names(col_index))==FALSE) #check for validity of outcome
+        stop("invalid outcome", call. = TRUE)
+
+  hosp_state <- subset(hospfile, select = c(2,7,col_index[[outcome]])) 
+  hosp_order <- hosp_state[order(hosp_state[,3],hosp_state[,1], na.last = NA),]
   
-  for (i in hstate) 
-    {
-      hosp_state <- subset(hospfile, State == i, select = c(2,col_index[[outcome]])) #columns selected based on outcome
-      hosp_order <- hosp_state[order(hosp_state[,2],hosp_state[,1], na.last = NA),]  #sort columns by outcome values and by hospital name
-      
-      number = num
-      
-      if(number == "best")  {number = 1} #num values for best and worst
-      if(number == "worst") {number = length(hosp_order[,2])}           
-      
-      hosp_name <- hosp_order[,1][match(hosp_order[,2][number],hosp_order[,2],nomatch = NA)] #select the hospital name by num value specified
-      hranking <- rbind(hranking, as.data.frame(hosp_name, stringsasFactors = FALSE))
-    } 
+  hstate <- split(hosp_order,hosp_order[,2])      
   
-  hranking <- cbind(hranking,hstate)
-  colnames(hranking) <- c("hospital","state")
-  hranking
-}
+  hospname <- function(x) {
+    
+    if(num == "best") {num = 1} #num values for best and worst
+      else if(num == "worst") {num = length(x[,2])}
+    
+    x[,1][which(x[,3][num]==x[,3])]
+    
+    if (length(x) > 1) {x[,1][num]} #select hospital name in case of tie and rank not available
+      else if (length(x) == 0) {return(NA)}
+    
+  }
+  
+  hosp_name <- sapply(hstate,hospname)
+  data.frame(hospital = hosp_name, state = names(hosp_name))
+}   
