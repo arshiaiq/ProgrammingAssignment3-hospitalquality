@@ -18,11 +18,7 @@ lrankall <- function(outcome,num = "best") {
     if(num == "best") {num = 1} #num values for best and worst
       else if(num == "worst") {num = length(x[,2])}
     
-    x[,1][which(x[,3][num]==x[,3])]
-    
-    if (length(x) > 1) {x[,1][num]} #select hospital name in case of tie and rank not available
-      else if (length(x) == 0) {return(NA)}
-    
+    x[,1][num] #select hospital name based on num value
   }
   
   hosp_name <- sapply(hstate,hospname)
