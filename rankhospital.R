@@ -17,10 +17,6 @@ rankhospital <- function(state,outcome,num = "best") {
       if(num == "best") {num = 1} #num values for best and worst
        else if(num == "worst") {num = length(hosp_order[,2])}
   
-  hosp_name <- hosp_order[,1][which(hosp_order[,2][num]==hosp_order[,2])] #select the hospital name by num value specified
-  
-      if (length(hosp_name) > 1) {hosp_name <- hosp_order[,1][num]} #select hospital name in case of tie and rank not available
-       else if (length(hosp_name) == 0) {return(NA)}
-  
+  hosp_name <- hosp_order[,1][num] #select the hospital name by num value specified
   hosp_name
 }  
